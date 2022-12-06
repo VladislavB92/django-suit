@@ -10,11 +10,7 @@ except ImportError:
     # For Django >= 2.0
     from django.urls import reverse, resolve
 
-try:
-    from django.utils.six import string_types
-except ImportError:
-    # For Django < 1.4.2
-    string_types = basestring,
+from six import string_types
 
 import re
 import warnings
@@ -191,7 +187,6 @@ class Menu(object):
 
         return app
 
-
     def app_is_forbidden(self, app):
         return app['permissions'] and \
                not self.user_has_permission(app['permissions'])
@@ -207,7 +202,7 @@ class Menu(object):
         if 'icon' in app:
             app['icon'] = app['icon'] or 'icon-'
         elif self.conf_icons and 'name' in app and \
-                        app['name'] in self.conf_icons:
+                app['name'] in self.conf_icons:
             app['icon'] = self.conf_icons[app['name']]
 
     def process_semi_native_app(self, app):
@@ -289,11 +284,11 @@ class Menu(object):
             model = self.make_model(model_def, app_name)
             return [model] if model else []
         prefix = match.group(1)
-        prefix = self.get_model_name(app_name,prefix)
+        prefix = self.get_model_name(app_name, prefix)
         return [
             m
             for m in [
-                self.convert_native_model(native_model,app_name)
+                self.convert_native_model(native_model, app_name)
                 for native_model in self.all_models
                 if self.get_native_model_name(native_model).startswith(prefix)
             ]
@@ -348,8 +343,8 @@ class Menu(object):
             'url': self.get_native_model_url(model),
             'name': self.get_native_model_name(model),
             'app': app_name,
-            'perms': model.get('perms',None),
-            'add_url': model.get('add_url',None),
+            'perms': model.get('perms', None),
+            'add_url': model.get('add_url', None),
         }
 
     def get_native_model_url(self, model):
@@ -423,8 +418,8 @@ class Menu(object):
 
             # Mark as active by url match
             if not self.app_activated \
-                and (self.request.path == app['url']
-                     or self.request.path == app.get('orig_url')):
+                    and (self.request.path == app['url']
+                         or self.request.path == app.get('orig_url')):
                 app['is_active'] = self.app_activated = True
 
         if not self.app_activated:
